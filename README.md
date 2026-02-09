@@ -1,48 +1,78 @@
-/saytds-anime
-├── /components      # UI elementlari (Player, Card, Navbar)
-├── /pages           # Sahifalar (Home, Watch, Search)
-├── /public          # Rasmlar va ikonlar
-├── /styles          # CSS dizaynlari
-└── package.json     # Kutubxonalar ro'yxati
-// pages/watch/[id].js
-import { useRouter } from 'next/router';
+Аниме веб-сайт
 
-export default function Watch() {
-  const router = useRouter();
-  const { id, episode } = router.query; // Anime ID va qism raqami
+Веб-приложение для просмотра, комментирования и оценки аниме. Приложение построено на основе паттерна **MVC (Model-View-Controller)** с использованием следующих технологий:
 
-  // Bu yerda video manbasi (masalan, Telegram yoki player linki)
-  const videoSrc = `https://your-video-provider.com/embed/${id}?ep=${episode}`;
+**Бэкенд:**
+Node.js, Express.js, MySQL2.
 
-  return (
-    <div className="video-container">
-      <h1>Anime ko'rish: {id}</h1>
-      <div className="player-wrapper">
-        <iframe 
-          src={videoSrc} 
-          width="100%" 
-          height="500px" 
-          allowFullScreen 
-          frameBorder="0">
-        </iframe>
-      </div>
-      <div className="episode-list">
-        <h3>Qismlar:</h3>
-        {/* Qismlar tugmachalari shu yerda bo'ladi */}
-      </div>
-    </div>
-  );
-}
-{
-  "anime_name": "Naruto",
-  "poster": "https://image.url/poster.jpg",
-  "description": "Ninja haqida sarguzashtlar",
-  "episodes": [
-    {"number": 1, "link": "https://vido.uz/e/123"},
-    {"number": 2, "link": "https://vido.uz/e/124"}
-  ]
-}
-git clone https://github.com/riimuru/gogoanime.git
-cd gogoanime
-npm install
-npm run dev
+**Фронтенд:**
+HTML, CSS, JavaScript, Bootstrap, Handlebars.
+
+#### Ссылка на сайт [AnimeArea](http://petanimearea.freemyip.com).
+
+<br>
+<div style="text-align:center">
+ <img src="https://i.imgur.com/zfn9rht.png" width="1000"/>
+  <img src="https://i.imgur.com/PhsboHD.png" width="1000"/>
+</div>
+<br>
+
+**Аутентификация:**
+
+- **JWT (JSON Web Token):** Стандарт для создания и верификации токенов доступа. Используется для аутентификации пользователей и авторизации администратора.
+
+**Основные части приложения:**
+
+- **Модели (`/models`):** Отвечают за взаимодействие с базой данных, выполняя SQL запросы и обрабатывая полученные данные.
+- **Контроллеры (`/controllers`):** Обрабатывают HTTP-запросы, вызывая соответствующие методы моделей и передавая данные в представления.
+- **Представления (`/views`):** Шаблоны Handlebars, которые используются для отображения HTML-страниц на основе данных, полученных от контроллеров.
+
+**Функционал:**
+
+- **Просмотр аниме:** Пользователи могут просматривать каталог аниме, искать аниме по названию, фильтровать по жанру, году выпуска, студии озвучивания и другим параметрам.
+- **Описание аниме:** Каждое аниме имеет страницу с подробным описанием, постером, скриншотами, трейлером, списком озвучивающих студий, режиссёром, жанрами, главными героями и комментариями пользователей.
+- **Комментарии:** Авторизованные пользователи могут оставлять комментарии к аниме.
+- **Рейтинг:** Авторизованные пользователи могут оценивать аниме по 10-балльной шкале.
+- **Просмотренное:** Авторизованные пользователи могут отмечать аниме как просмотренное.
+- **Аккаунт пользователя:** Авторизованные пользователи имеют доступ к личному кабинету, где могут просматривать свои комментарии, избранное аниме, менять аватар и другие настройки.
+- **Административная панель:** Пользователи с ролью "admin" имеют доступ к административной панели, где могут управлять аниме (CRUD операции) и пользователями.
+
+<div style="text-align:center">
+  <img src="https://i.imgur.com/WPB5LOi.png" width="550"/>
+  <img src="https://i.imgur.com/brafpi7.png" width="550"/>
+  <img src="https://i.imgur.com/2EUPe8k.png" width="550"/>
+  <img src="https://i.imgur.com/ILxRjNl.png" width="550"/>
+  <img src="https://i.imgur.com/6ESzTo6.png" width="550"/>
+  <img src="https://i.imgur.com/meSzSQD.png" width="550"/>
+  <img src="https://i.imgur.com/hNfeyM5.png" width="550"/>
+  <img src="https://i.imgur.com/K3uiGKi.png" width="550"/>
+</div>
+<br>
+<br>
+
+**Логика работы:**
+
+1. Пользователь отправляет HTTP-запрос (например, GET-запрос на `/main/catalog`).
+2. Express.js маршрутизирует запрос к соответствующему контроллеру (например, `mainController.getAllAnime`).
+3. Контроллер вызывает соответствующий метод модели (например, `mainModel.getAllAnime`).
+4. Модель выполняет SQL запрос к базе данных и получает данные о всех аниме.
+5. Модель возвращает данные контроллеру.
+6. Контроллер рендерит представление (например, `animeViews/allAnime.hbs`), передавая в него полученные данные.
+7. Handlebars генерирует HTML-страницу на основе шаблона и данных.
+8. Express.js отправляет сгенерированную HTML-страницу пользователю.
+
+**Аутентификация и авторизация:**
+
+- При регистрации пользователя его пароль хэшируется с помощью bcrypt перед сохранением в базе данных.
+- При входе пользователя создаются **accessToken** (срок действия 15 минут) и **refreshToken** (срок действия 72 часа). AccessToken сохраняется в cookie, а refreshToken — в базе данных.
+- При запросе защищенных ресурсов приложение проверяет наличие accessToken в cookie.
+- Если accessToken недействителен или истек срок его действия, приложение проверяет refreshToken и, если он действителен, генерирует новый accessToken.
+- Для доступа к административной панели приложение дополнительно проверяет, имеет ли пользователь роль "admin".
+
+**Запуск приложения:**
+
+1. Клонировать репозиторий.
+2. Создать базу данных и импортировать схему из файла `/DB_backup/Backup/AnimeSiteDB_Backup.sql`.
+3. Настроить переменные окружения (`.env`) для подключения к базе данных и JWT.
+4. Выполнить `npm install` для установки зависимостей.
+5. Запустить сервер с помощью `npm start` или `npm devstart`.
