@@ -1,80 +1,48 @@
-anime-site/
-│── index.html        (bosh sahifa)
-│── watch.html        (anime ko‘rish)
-│── admin.html        (admin panel)
-│
-│── css/
-│   └── style.css
-│
-│── js/
-│   ├── app.js        (anime chiqarish)
-│   ├── watch.js      (qismlar)
-│   └── admin.js      (admin panel)<!DOCTYPE html>
-<html>
-<head>
-  <title>Anime Site</title>
-  <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
+/saytds-anime
+├── /components      # UI elementlari (Player, Card, Navbar)
+├── /pages           # Sahifalar (Home, Watch, Search)
+├── /public          # Rasmlar va ikonlar
+├── /styles          # CSS dizaynlari
+└── package.json     # Kutubxonalar ro'yxati
+// pages/watch/[id].js
+import { useRouter } from 'next/router';
 
-<h1>🔥 Anime World</h1>
-<div id="anime-list"></div>
+export default function Watch() {
+  const router = useRouter();
+  const { id, episode } = router.query; // Anime ID va qism raqami
 
-<script src="js/app.js"></script>
-</body>
-</html>fetch("https://YOUR_FIREBASE_URL/anime.json")
-.then(res => res.json())
-.then(data => {
-  let html = "";
-  for (let id in data) {
-    html += `
-      <div class="card">
-        <h3>${data[id].name}</h3>
-        <a href="watch.html?id=${id}">Ko‘rish</a>
-      </div>`;
-  }
-  document.getElementById("anime-list").innerHTML = html;
-});<h2 id="title"></h2>
+  // Bu yerda video manbasi (masalan, Telegram yoki player linki)
+  const videoSrc = `https://your-video-provider.com/embed/${id}?ep=${episode}`;
 
-<iframe id="player" width="100%" height="480"></iframe>
-
-<div id="episodes"></div>
-
-<script src="js/watch.js"></script>const id = new URLSearchParams(location.search).get("id");
-
-fetch(`https://YOUR_FIREBASE_URL/anime/${id}.json`)
-.then(res => res.json())
-.then(data => {
-  document.getElementById("title").innerText = data.name;
-
-  let eps = "";
-  data.episodes.forEach((ep, i) => {
-    eps += `<button onclick="play('${ep}')">${i+1}-qism</button>`;
-  });
-
-  document.getElementById("episodes").innerHTML = eps;
-  document.getElementById("player").src = data.episodes[0];
-});
-
-function play(url){
-  document.getElementById("player").src = url;
-}<h2>Admin Panel</h2>
-
-<input id="name" placeholder="Anime nomi">
-<textarea id="episodes" placeholder="Video linklar (har qatorga bittadan)"></textarea>
-<button onclick="save()">Saqlash</button>
-
-<script src="js/admin.js"></script>function save(){
-  const name = document.getElementById("name").value;
-  const eps = document.getElementById("episodes").value.split("\n");
-
-  fetch("https://YOUR_FIREBASE_URL/anime.json", {
-    method: "POST",
-    body: JSON.stringify({
-      name: name,
-      episodes: eps
-    })
-  });
-
-  alert("Anime qo‘shildi!");
-}https://drive.google.com/file/d/VIDEO_ID/previewhttps://username.github.io/anime-site
+  return (
+    <div className="video-container">
+      <h1>Anime ko'rish: {id}</h1>
+      <div className="player-wrapper">
+        <iframe 
+          src={videoSrc} 
+          width="100%" 
+          height="500px" 
+          allowFullScreen 
+          frameBorder="0">
+        </iframe>
+      </div>
+      <div className="episode-list">
+        <h3>Qismlar:</h3>
+        {/* Qismlar tugmachalari shu yerda bo'ladi */}
+      </div>
+    </div>
+  );
+}
+{
+  "anime_name": "Naruto",
+  "poster": "https://image.url/poster.jpg",
+  "description": "Ninja haqida sarguzashtlar",
+  "episodes": [
+    {"number": 1, "link": "https://vido.uz/e/123"},
+    {"number": 2, "link": "https://vido.uz/e/124"}
+  ]
+}
+git clone https://github.com/riimuru/gogoanime.git
+cd gogoanime
+npm install
+npm run dev
